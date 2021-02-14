@@ -9,6 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.letdrink.R
 import io.letdrink.features.favorites.FavoritesFragment
 import io.letdrink.features.random.RandomFragment2
+import io.letdrink.section.search.featured.FeaturedFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
@@ -26,12 +27,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         FavoritesFragment()
     }
 
+    private val searchFragment: FeaturedFragment by lazy {
+        FeaturedFragment()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         supportFragmentManager.commitNow {
             add(R.id.mainContainer, favoritesFragment)
             add(R.id.mainContainer, randomFragment)
+            add(R.id.mainContainer, searchFragment)
         }
 
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
@@ -40,6 +46,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     supportFragmentManager.commitNow {
                         show(randomFragment)
                         hide(favoritesFragment)
+                        hide(searchFragment)
                     }
                     true
                 }
@@ -47,6 +54,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     supportFragmentManager.commitNow {
                         show(favoritesFragment)
                         hide(randomFragment)
+                        hide(searchFragment)
+                    }
+                    true
+                }
+                R.id.action_search -> {
+                    supportFragmentManager.commitNow {
+                        hide(favoritesFragment)
+                        hide(randomFragment)
+                        show(searchFragment)
                     }
                     true
                 }

@@ -8,6 +8,7 @@ object Constants {
         const val PREVIEW_DRINK_ITEM_ID = 3
         const val PREVIEW_DRINK_ITEM_PH_ID = 4
         const val DRINK_ITEM_RECYCLER_ID = 5
+        const val CATEGORIES_RECYCLER_ID = 6
     }
 
     object UI {
@@ -34,5 +35,9 @@ object Constants {
     object DRINK_CARD {
         const val PAYLOAD_FAVOURITE = "PAYLOAD_FAVOURITE"
         const val PAYLOAD_SIMILIAR = "PAYLOAD_SIMILIAR"
+    }
+
+    object LOCAL_BAR{
+        const val IMAGES = "https://raw.githubusercontent.com/alfg/opendrinks/master/src/assets/recipes/"
     }
 }
