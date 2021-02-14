@@ -1,0 +1,5 @@
+include ':thecocktaildb'
+include ':db_snapshot'
+include ':localBar'
+include ':app'
+rootProject.name = "LetDrink"

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="160dp"
+    app:cardUseCompatPadding="true"
+    android:background="@drawable/bg_drink_card_shimmer_rounded"
+    app:cardCornerRadius="16dp"
+    android:elevation="4dp"
+    android:layout_height="230dp">
+</FrameLayout>

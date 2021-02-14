@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_drink_card_rounded"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/returnFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_arrow_back_24"
+        app:backgroundTint="@color/purple_500"
+        android:layout_margin="8dp"
+        app:layout_anchor="@+id/drinkCardFragment"
+        app:tint="@color/white"
+        app:maxImageSize="18dp"
+        app:fabSize="mini"
+        app:layout_anchorGravity="top|start"
+        android:contentDescription="@null" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/drinkCardFragment"
+        android:name="io.letdrink.section.drink.DrinkCardFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:tag="card" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/backFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_arrow_back_24"
+        app:backgroundTint="@color/purple_500"
+        app:layout_anchor="@+id/drinkCardFragment"
+        app:tint="@color/white"
+        app:useCompatPadding="true"
+        app:layout_anchorGravity="bottom|start"
+        android:contentDescription="@null" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/forwardFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_arrow_forward_24"
+        app:backgroundTint="@color/purple_500"
+        app:layout_anchorGravity="bottom|end"
+        app:layout_anchor="@+id/drinkCardFragment"
+        app:tint="@color/white"
+        app:useCompatPadding="true"
+        android:contentDescription="@null" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
