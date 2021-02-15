@@ -31,7 +31,7 @@ fun Drink.toCocktail(): Cocktail {
         description = "",
         directions = listOf(this.instructions),
         github = "",
-        image = this.drinkThumb,
+        image = this.getImage(),
         keywords = listOf(this.ingredients.first().name),
         name = this.drinkName,
         source = "openDB",

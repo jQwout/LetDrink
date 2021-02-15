@@ -1,15 +1,12 @@
-package io.letdrink.common.network.di
+package com.example.thecocktaildb.network.di
 
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 
 object RetrofitProvider {
 
-    fun provideRetrofit(okHttp: OkHttpClient ,factory: GsonFactory, url: String): Retrofit {
+    fun provideRetrofit(okHttp: OkHttpClient, factory: GsonFactory, url: String): Retrofit {
         return Retrofit.Builder()
             .client(okHttp)
             .addConverterFactory(GsonConverterFactory.create(factory.gson))

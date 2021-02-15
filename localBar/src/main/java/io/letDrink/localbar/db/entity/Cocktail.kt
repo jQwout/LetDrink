@@ -20,7 +20,8 @@ data class Cocktail(
     val name: String,
     val source: String?,
     val isFavorite: Boolean = false,
-    val remoteId: Long = 0
+    val remoteId: Long = 0,
+    val localFileName: String? = null
 )
 
 class StringListConverter {

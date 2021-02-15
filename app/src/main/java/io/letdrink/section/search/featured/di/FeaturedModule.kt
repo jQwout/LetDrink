@@ -1,15 +1,10 @@
 package io.letdrink.section.search.featured.di
 
-import android.content.Context
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
-import dagger.hilt.android.components.FragmentComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
-import io.letdrink.common.network.di.GsonFactory
-import io.letdrink.common.network.di.RetrofitProvider
 import io.letdrink.common.storage.FilesStorage
 import io.letdrink.section.search.featured.FeaturedApi
 import io.letdrink.section.search.featured.FeaturedRepository

@@ -23,6 +23,10 @@ class CocktailRepository internal constructor(
         return cocktailDao.getByName(name)
     }
 
+    suspend fun getByLocalName(name: String) : List<CocktailWithIngredients> {
+        return cocktailDao.getLocalName(name)
+    }
+
     suspend fun getByKey(key: String): List<CocktailWithIngredients> {
         return cocktailDao.getByKey(key)
     }

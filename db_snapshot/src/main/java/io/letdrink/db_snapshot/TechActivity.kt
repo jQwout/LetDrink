@@ -1,20 +1,20 @@
 package io.letdrink.db_snapshot
 
-import android.content.Context
 import android.content.res.AssetManager
 import android.os.Bundle
-import android.preference.Preference
-import android.preference.PreferenceManager
 import android.widget.TextView
-import androidx.core.content.FileProvider
 import androidx.core.content.edit
 import androidx.fragment.app.FragmentActivity
+import com.example.thecocktaildb.network.CocktailApi
+import com.example.thecocktaildb.network.CocktailApiServiceLocator
+import com.example.thecocktaildb.network.di.GsonFactory
+import com.example.thecocktaildb.network.di.OkHttpFactory
+import com.example.thecocktaildb.network.di.RetrofitProvider
 import com.google.gson.Gson
 import io.letDrink.localbar.db.CocktailConsumer
 import io.letDrink.localbar.db.LocalBarServiceLocator
 import io.letdrink.db_snapshot.asset.CocktailsJson
 import kotlinx.coroutines.runBlocking
-import java.io.File
 import kotlin.concurrent.thread
 
 class TechActivity : FragmentActivity() {
@@ -22,8 +22,7 @@ class TechActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tech)
         val textView = findViewById<TextView>(R.id.techStatus)
-        sharedPresTest(textView)
-
+        dbWork(textView)
     }
 
     private fun sharedPresTest(textView: TextView) {
@@ -46,40 +45,18 @@ class TechActivity : FragmentActivity() {
     }
 
     private fun dbWork(textView: TextView) = thread {
+        val locator = LocalBarServiceLocator(this, "db_with_images")
+        val api = CocktailApiServiceLocator().api
         val gson = Gson()
-        val locator = LocalBarServiceLocator(this)
-        populateFromAsset(assets, gson, locator.cocktailConsumer)
+        PopulateHelper(
+            api,
+            locator.cocktailConsumer,
+            assets,
+            gson
+        )()
+
         runOnUiThread {
             textView.text = "выгрузка базы данных завершена"
-        }
-    }
-}
-
-
-fun populateFromAsset(
-    assetManager: AssetManager,
-    gson: Gson,
-    cocktailConsumer: CocktailConsumer
-) {
-    val jsons = assetManager.list("recipes")
-
-    val cocktails = jsons?.mapNotNull {
-        try {
-            gson.fromJson(
-                assetManager.open("recipes/$it").reader().readText(),
-                CocktailsJson::class.java
-            )
-        } catch (e: Throwable) {
-            println("error : $it")
-            null
-        }
-    }
-
-    cocktails?.let { list ->
-        runBlocking {
-            list.forEach {
-                cocktailConsumer.add(it.getCocktails(), it.ingredients)
-            }
         }
     }
 }

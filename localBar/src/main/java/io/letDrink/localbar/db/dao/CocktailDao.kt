@@ -1,9 +1,6 @@
 package io.letDrink.localbar.db.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import io.letDrink.localbar.db.entity.Cocktail
 import io.letDrink.localbar.db.entity.CocktailWithIngredients
 
@@ -25,6 +22,7 @@ internal abstract class CocktailDao {
     @Query("SELECT * FROM `Cocktail` ORDER BY RANDOM() LIMIT 1")
     abstract suspend fun getRandom(): CocktailWithIngredients
 
-
+    @Query("SELECT * FROM `Cocktail` WHERE localFileName LIKE '%' || :local || '%'")
+    abstract suspend fun getLocalName(local: String): List<CocktailWithIngredients>
 }
 

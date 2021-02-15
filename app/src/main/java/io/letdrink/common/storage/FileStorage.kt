@@ -2,9 +2,7 @@ package io.letdrink.common.storage
 
 import android.content.Context
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.letdrink.common.network.di.GsonFactory
 import java.io.File
 import java.io.InputStream
 import java.lang.reflect.Type

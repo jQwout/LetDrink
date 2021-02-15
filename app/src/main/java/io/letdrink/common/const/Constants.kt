@@ -23,7 +23,7 @@ object Constants {
         const val INIT = "db.init"
     }
 
-    object SIMILIAR{
+    object SIMILIAR {
         const val SIZE_LOCAL = 8
         const val SIZE_NETWORK = 4
     }
@@ -37,7 +37,9 @@ object Constants {
         const val PAYLOAD_SIMILIAR = "PAYLOAD_SIMILIAR"
     }
 
-    object LOCAL_BAR{
-        const val IMAGES = "https://raw.githubusercontent.com/alfg/opendrinks/master/src/assets/recipes/"
+    object LOCAL_BAR {
+        const val IMAGES =
+            "https://raw.githubusercontent.com/alfg/opendrinks/master/src/assets/recipes/"
+        const val JSON = "https://raw.githubusercontent.com/alfg/opendrinks/master/src/recipes/"
     }
 }

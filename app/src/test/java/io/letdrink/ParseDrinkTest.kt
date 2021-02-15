@@ -1,7 +1,7 @@
 package io.letdrink
 
 import io.letDrink.localbar.db.entity.Cocktail
-import io.letdrink.common.network.di.GsonFactory
+import com.example.thecocktaildb.network.di.GsonFactory
 import com.example.thecocktaildb.network.models.Drink
 import org.junit.Test
 

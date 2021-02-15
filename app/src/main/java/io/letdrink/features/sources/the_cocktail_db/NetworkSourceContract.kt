@@ -1,7 +1,7 @@
 package io.letdrink.features.sources.the_cocktail_db
 
 import com.example.thecocktaildb.network.models.Drink
-import io.letdrink.features.random.CocktailApi
+import com.example.thecocktaildb.network.CocktailApi
 import io.letdrink.features.sources.SourceContract
 import javax.inject.Inject
 

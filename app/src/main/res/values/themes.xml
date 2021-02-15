@@ -14,6 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="Theme.LetDrink.Fullscreen" parent="Theme.LetDrink">

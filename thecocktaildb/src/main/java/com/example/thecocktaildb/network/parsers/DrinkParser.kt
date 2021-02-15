@@ -24,7 +24,7 @@ class DrinkParser : JsonDeserializer<Drink> {
                 instructions = getStr("strInstructions"),
                 imageSource = getStrOrNULL("strImageSource"),
                 categories = getStrOrNULL("strCategory"),
-                drinkThumb = getStr("strDrinkThumb"),
+                drinkThumb = getStrOrNULL("strDrinkThumb"),
                 description = null,
                 isFavourite = false
             )

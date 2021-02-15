@@ -1,4 +1,4 @@
-package io.letdrink.section.search.featured
+package io.letdrink.section.search.featured.category
 
 import android.view.View
 import android.widget.ImageView
@@ -9,10 +9,11 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 import io.letdrink.R
 import io.letdrink.common.const.Constants.FastAdapter.CATEGORIES_RECYCLER_ID
+import io.letdrink.section.search.featured.CategoryModel
 
-open class CategoriesItem(
+open class DrinkByCategoryItem(
     var model: CategoryModel
-) : AbstractItem<CategoriesItem.ViewHolder>() {
+) : AbstractItem<DrinkByCategoryItem.ViewHolder>() {
 
     override val type: Int
         get() = CATEGORIES_RECYCLER_ID
@@ -24,11 +25,11 @@ open class CategoriesItem(
         return ViewHolder(v)
     }
 
-    class ViewHolder(private val view: View) : FastAdapter.ViewHolder<CategoriesItem>(view) {
+    class ViewHolder(private val view: View) : FastAdapter.ViewHolder<DrinkByCategoryItem>(view) {
         var name: TextView = view.findViewById(R.id.drinkCategoryDescription)
         var image: ImageView = view.findViewById(R.id.drinkCategoryImage)
 
-        override fun bindView(item: CategoriesItem, payloads: List<Any>) {
+        override fun bindView(item: DrinkByCategoryItem, payloads: List<Any>) {
             name.text = item.model.description
 
             Glide.with(view)
@@ -38,7 +39,7 @@ open class CategoriesItem(
             ViewCompat.setTransitionName(image , item.model.description)
         }
 
-        override fun unbindView(item: CategoriesItem) {
+        override fun unbindView(item: DrinkByCategoryItem) {
             name.text = null
             image.setImageDrawable(null)
         }

@@ -32,7 +32,12 @@ import kotlinx.android.synthetic.main.fragment_drink_card_bottom_sheet_redesing.
 import kotlinx.android.synthetic.main.fragment_drink_card_bottom_sheet_redesing_shimmer.*
 import kotlinx.android.synthetic.main.fragment_drink_card_redesing.*
 import kotlinx.android.synthetic.main.fragment_random.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DrinkCardFragment : Fragment(R.layout.fragment_drink_card_redesing) {
@@ -81,8 +86,7 @@ class DrinkCardFragment : Fragment(R.layout.fragment_drink_card_redesing) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        lifecycleScope.launchWhenCreated {
+        lifecycleScope.launchWhenResumed {
             viewModel.uiState.collect { state ->
                 state.favourite.content?.let { setFavorite(it) }
                 setSimiliar(state.similiar)
@@ -140,13 +144,11 @@ class DrinkCardFragment : Fragment(R.layout.fragment_drink_card_redesing) {
                             isFirstResource: Boolean
                         ): Boolean {
                             image.setImageDrawable(resource)
-                            val h =
-                                (MetricsUtil.getDisplayH(requireActivity())) - resource.minimumHeight + MetricsUtil.convertPixelsToDp(
-                                    requireContext(),
-                                    20F
-                                )
+                            val displayH = MetricsUtil.getDisplayH(requireActivity())
+                            val margin = MetricsUtil.convertDpToPixel(requireContext(), 8F)
+                            val h = displayH - resource.minimumHeight + margin
                             drinkCardBottomSheet.minimumHeight = h.toInt()
-                            bottomSheetBehavior?.peekHeight = h.toInt()
+                            bottomSheetBehavior?.setPeekHeight(h.toInt(), true)
                             return true
                         }
                     })

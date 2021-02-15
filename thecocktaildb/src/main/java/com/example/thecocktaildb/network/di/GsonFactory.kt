@@ -1,4 +1,4 @@
-package io.letdrink.common.network.di
+package com.example.thecocktaildb.network.di
 
 import com.google.gson.GsonBuilder
 import com.example.thecocktaildb.network.models.Drink

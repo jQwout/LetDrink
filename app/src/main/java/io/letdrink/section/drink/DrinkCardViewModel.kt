@@ -17,42 +17,42 @@ import kotlinx.coroutines.flow.*
 class DrinkCardViewModel @ViewModelInject constructor(
     private val favoritesRepository: FavouritesRepository,
     private val findByIngredientUseCase: FindByIngredientUseCase
-) : BaseViewModel<DrinkCardState2>() {
+) : BaseViewModel<DrinkCardState>() {
 
-    override val uiState: MutableStateFlow<DrinkCardState2> = MutableStateFlow(DrinkCardState2())
+    override val uiState: MutableStateFlow<DrinkCardState> = MutableStateFlow(
+        DrinkCardState()
+    )
 
-    private var changeFavoriteJob = SupervisorJob()
-    private var loadSimiliarJob = SupervisorJob()
-
-    fun changeFavorite(drink: Drink) {
-        changeFavoriteJob = changeFavoriteJob.cancelChildrenAndCreateNew()
-        asyncOnce(
-            job = changeFavoriteJob,
-            onIO = {
-                val newDrink = drink.copy(isFavourite = !drink.isFavourite)
-                if (newDrink.isFavourite) {
-                    favoritesRepository.add(newDrink.toCocktail())
-                } else {
-                    favoritesRepository.remove(newDrink.toCocktail())
-                }
-                newDrink
-            },
-            onUI = { uiState.emit(lastState.copy(favourite = SectionState(it))) }
-        )
+    fun changeFavorite(drink: Drink) = backgroundScope.launch {
+        val newDrink = drink.copy(isFavourite = !drink.isFavourite)
+        if (newDrink.isFavourite) {
+            favoritesRepository.add(newDrink.toCocktail())
+        } else {
+            favoritesRepository.remove(newDrink.toCocktail())
+        }
+        delay(50)
+        uiState.emit(lastState.copy(favourite = SectionState(newDrink)))
     }
 
-    fun loadSimiliar(drink: Drink) {
-        loadSimiliarJob = loadSimiliarJob.cancelChildrenAndCreateNew()
-        asyncOnce(
-            job = loadSimiliarJob,
-            onIO = { findByIngredientUseCase.find(drink) },
-            onUI = { uiState.emit(lastState.copy(similiar = SectionState(it))) }
+    fun loadSimiliar(drink: Drink) = backgroundScope.launch {
+        val similiar = findByIngredientUseCase.find(drink)
+        uiState.emit(
+            lastState.copy(
+                similiar = SectionState(similiar),
+                favourite = SectionState(drink)
+            )
         )
     }
-
 }
 
-data class DrinkCardState2(
+class DrinkCardState(
     val similiar: SectionState<List<Drink>> = SectionState(),
     val favourite: SectionState<Drink> = SectionState()
-)
+) {
+    fun copy(
+        similiar: SectionState<List<Drink>> = SectionState(),
+        favourite: SectionState<Drink> = SectionState()
+    ): DrinkCardState {
+        return DrinkCardState(similiar, favourite)
+    }
+}

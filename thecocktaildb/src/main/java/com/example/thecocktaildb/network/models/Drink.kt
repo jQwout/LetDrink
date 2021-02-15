@@ -12,7 +12,7 @@ data class Drink(
     val alcoholic: String,
     val ingredients: List<Ingredient>,
     val imageSource: String?,
-    val drinkThumb: String,
+    val drinkThumb: String?,
     val isFavourite: Boolean,
 ) : Serializable {
 
@@ -20,7 +20,9 @@ data class Drink(
         return "Drink(id=$id, drinkName=\"$drinkName\", tags=\"$tags\", instructions=\"$instructions\", ingredients=$ingredients, imageSource=$imageSource, drinkThumb=\"$drinkThumb\")"
     }
 
-    fun getPreview() = "$drinkThumb/preview"
+    fun getImage() = checkNotNull(drinkThumb ?: imageSource)
+
+    fun getPreview() = "${getImage()}/preview"
 
     fun getDescriptionOnIngredientsStr(): String {
         if (description.isNullOrBlank()) {

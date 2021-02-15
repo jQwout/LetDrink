@@ -3,7 +3,7 @@ package io.letdrink.db_snapshot.asset
 import io.letDrink.localbar.db.entity.Cocktail
 import io.letDrink.localbar.db.entity.Ingredient
 
-internal class CocktailsJson(
+internal data class CocktailsJson(
     val description: String,
     val directions: List<String>,
     val github: String,
@@ -11,9 +11,11 @@ internal class CocktailsJson(
     val keywords: List<String>,
     val name: String,
     val source: String?,
-    val ingredients: List<Ingredient>
+    val ingredients: List<Ingredient>,
+    val localName: String? = null
 ) {
+
     fun getCocktails() = Cocktail(
-        description, directions, github, image, keywords, name, source
+        description, directions, github, image, keywords, name, source, localFileName = localName
     )
 }

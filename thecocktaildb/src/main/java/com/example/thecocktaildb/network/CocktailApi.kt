@@ -1,4 +1,4 @@
-package io.letdrink.features.random
+package com.example.thecocktaildb.network
 
 import com.example.thecocktaildb.network.models.Drink
 import com.example.thecocktaildb.network.models.PreviewDrink
@@ -15,8 +15,13 @@ interface CocktailApi {
 
     @GET("lookup.php")
     suspend fun getById(@Query("i") id: Long): DrinkPayload
+
+    @GET("search.php")
+    suspend fun getByName(@Query("s") s: String): DrinkPayloadNullable
 }
 
 class DrinkPayload(val drinks: List<Drink>)
 
 class PreviewDrinkPayload(val drinks: List<PreviewDrink>)
+
+class DrinkPayloadNullable(val drinks: List<Drink>?)

@@ -4,10 +4,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.thecocktaildb.network.models.Drink
-import io.letdrink.common.state.ScreenState
 import io.letdrink.common.state.SectionState
-import io.letdrink.features.ingredient.FindByIngredientUseCase
-import io.letdrink.section.drink.DrinkCardState
 import io.letdrink.section.drink.DrinkHistory
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*

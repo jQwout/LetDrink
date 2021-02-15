@@ -23,10 +23,12 @@ class SourceWrapper @Inject constructor(
 
     suspend fun random(simple: Boolean): Drink {
         return if (simple) {
-            val ingredient = ingredientsByCategory.simpleAlco.random()
-            local.findByIngredient(ingredient).first()
+            val ing = ingredientsByCategory.simpleAlco.random()
+            network.findByIngredient(ing).random()
         } else {
-            defineSource().random().apply { addToLocal(this) }
+            network.random()
+        }.apply {
+            addToLocal(this)
         }
     }
 

@@ -13,7 +13,7 @@ import io.letDrink.localbar.db.entity.Ingredient
 
 @Database(
     entities = [Cocktail::class, Ingredient::class, CocktailIngredientCrossRef::class],
-    version = 6
+    version = 8
 )
 internal abstract class LocalBarDB : RoomDatabase() {
     abstract val cocktailDao: CocktailDao

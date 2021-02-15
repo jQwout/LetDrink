@@ -1,28 +1,19 @@
-package io.letdrink.common.network
+package com.example.thecocktaildb.network.di
 
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
-import io.letDrink.localbar.BuildConfig
-import okhttp3.Interceptor
+import com.example.thecocktaildb.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 
-@Module
-@InstallIn(ApplicationComponent::class)
-object OkhttpModule {
+object OkHttpFactory {
 
     private const val HTTP_TIMEOUT_MS = 5000
 
-    @Provides
     fun createOkHttp(): OkHttpClient {
         val builder = OkHttpClient.Builder().also {
             it.connectTimeout(HTTP_TIMEOUT_MS.toLong(), TimeUnit.MILLISECONDS)
             it.readTimeout(HTTP_TIMEOUT_MS.toLong(), TimeUnit.MILLISECONDS)
             it.writeTimeout(HTTP_TIMEOUT_MS.toLong(), TimeUnit.MILLISECONDS)
-            it.followRedirects(false)
         }
 
         if (BuildConfig.DEBUG) {
@@ -33,5 +24,4 @@ object OkhttpModule {
 
         return builder.build()
     }
-
 }
