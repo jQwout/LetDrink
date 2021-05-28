@@ -20,7 +20,7 @@ class PrepopulateDBExecutor(
     internal val localBarDB: LocalBarDB by lazy {
         Room
             .databaseBuilder(context, LocalBarDB::class.java, dbName ?: DB_NAME)
-          //  .createFromAsset(DB_ASSET_PATH)
+            .createFromAsset(DB_ASSET_PATH)
             .fallbackToDestructiveMigration()
             .build()
     }

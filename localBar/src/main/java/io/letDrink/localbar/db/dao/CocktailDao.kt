@@ -22,7 +22,7 @@ internal abstract class CocktailDao {
     @Query("SELECT * FROM `Cocktail` ORDER BY RANDOM() LIMIT 1")
     abstract suspend fun getRandom(): CocktailWithIngredients
 
-    @Query("SELECT * FROM `Cocktail` WHERE localFileName LIKE '%' || :local || '%'")
+    @Query("SELECT * FROM `Cocktail` WHERE localFileName LIKE '%' || :local  || '%'")
     abstract suspend fun getLocalName(local: String): List<CocktailWithIngredients>
 }
 

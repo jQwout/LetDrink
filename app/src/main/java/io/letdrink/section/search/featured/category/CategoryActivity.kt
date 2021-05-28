@@ -101,11 +101,10 @@ class CategoryViewModel @ViewModelInject constructor(private val repository: Coc
     fun onStart(names: List<String>) = backgroundScope.launch {
 
         val list = names.map { name ->
-            repository.getByName(name).map {
+            repository.getByLocalName(name).map {
                 DrinkItem(it.toDrink())
             }
-        }
-            .flatten()
+        }.flatten()
 
         uiState.emit(
             CategoryState(list)

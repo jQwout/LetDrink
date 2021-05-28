@@ -1,9 +1,11 @@
 package io.letdrink.db_snapshot
 
 import android.content.res.AssetManager
+import android.content.res.Resources
 import android.os.Bundle
 import android.widget.TextView
 import androidx.core.content.edit
+import androidx.core.os.ConfigurationCompat
 import androidx.fragment.app.FragmentActivity
 import com.example.thecocktaildb.network.CocktailApi
 import com.example.thecocktaildb.network.CocktailApiServiceLocator
@@ -18,11 +20,12 @@ import kotlinx.coroutines.runBlocking
 import kotlin.concurrent.thread
 
 class TechActivity : FragmentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tech)
         val textView = findViewById<TextView>(R.id.techStatus)
-        dbWork(textView)
+
     }
 
     private fun sharedPresTest(textView: TextView) {
@@ -58,5 +61,20 @@ class TechActivity : FragmentActivity() {
         runOnUiThread {
             textView.text = "выгрузка базы данных завершена"
         }
+    }
+
+    private fun checkRequest(textView: TextView) = thread {
+        val locator = LocalBarServiceLocator(this)
+        val res = runBlocking {
+            locator.repository.getRandom()
+        }
+        runOnUiThread {
+            textView.text = "кол во записей ${res}"
+        }
+    }
+
+    private fun langTest(textView: TextView) {
+        val locale = ConfigurationCompat.getLocales(Resources.getSystem().configuration)
+        textView.setText(locale.get(0).language)
     }
 }
