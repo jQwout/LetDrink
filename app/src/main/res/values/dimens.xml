@@ -3,4 +3,8 @@
     <dimen name="pageMargin">16dp</dimen>
     <dimen name="offset">16dp</dimen>
     <dimen name="pageMarginAndOffset">32dp</dimen>
+
+    <item name="dialog_width" type="dimen">320dp</item>
+    <item name="dialog_height" type="dimen">144dp</item>
+    <item name="dialog_progress_size" type="dimen">56dp</item>
 </resources>

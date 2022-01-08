@@ -5,4 +5,14 @@
 
     <string name="random_drink">Random drink</string>
     <string name="random_drink_loader">Loading...</string>
+
+    <string name="button_ok_text">OK</string>
+    <string name="button_cancel_text">Cancel</string>
+
+    <string name="button_yes_text">YES</string>
+    <string name="button_no_text">NO</string>
+
+    <string name="error_subtitle_text">Error. Try again later.</string>
+
+    <string name="error_title_text">Error</string>
 </resources>

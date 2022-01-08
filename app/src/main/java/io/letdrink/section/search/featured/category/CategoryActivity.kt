@@ -6,21 +6,20 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.example.thecocktaildb.network.models.Drink
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import io.letDrink.localbar.db.CocktailRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.letDrink.localbar.db.pojo.FeaturedItem
+import io.letDrink.localbar.db.repository.CocktailRepository
 import io.letdrink.R
 import io.letdrink.common.recycler.ItemAdapter
 import io.letdrink.common.utils.intent
 import io.letdrink.common.viewmodel.BaseViewModel
 import io.letdrink.features.drink_list.DrinkItem
 import io.letdrink.features.glide.RequestListenerBase
-import io.letdrink.features.mapper.toDrink
 import io.letdrink.section.drink.getDrinkDetailsActivityIntent
 import io.letdrink.section.search.featured.CategoryModel
 import kotlinx.android.synthetic.main.fragment_category_drinks.*
@@ -29,9 +28,10 @@ import kotlinx.android.synthetic.main.fragment_favorites.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
-fun Activity.getCategoryActivityIntent(model: CategoryModel, imageTransitionName: String): Intent {
+fun Activity.getCategoryActivityIntent(model: FeaturedItem, imageTransitionName: String): Intent {
     return intent(CategoryActivity::class.java) {
         putExtra("model", model)
         putExtra("tr_name", imageTransitionName)
@@ -43,8 +43,8 @@ class CategoryActivity : AppCompatActivity(R.layout.fragment_category_drinks) {
 
     private val viewModel: CategoryViewModel by viewModels()
 
-    private val categoryModel: CategoryModel by lazy {
-        intent.getSerializableExtra("model") as CategoryModel
+    private val categoryModel: FeaturedItem by lazy {
+        intent.getSerializableExtra("model") as FeaturedItem
     }
 
     private val drinksAdapter: ItemAdapter<DrinkItem> by lazy {
@@ -93,22 +93,24 @@ class CategoryActivity : AppCompatActivity(R.layout.fragment_category_drinks) {
 }
 
 
-class CategoryViewModel @ViewModelInject constructor(private val repository: CocktailRepository) :
+@HiltViewModel
+class CategoryViewModel @Inject constructor(private val repository: CocktailRepository) :
     BaseViewModel<CategoryState>() {
 
     override val uiState: MutableStateFlow<CategoryState> = MutableStateFlow(CategoryState())
 
     fun onStart(names: List<String>) = backgroundScope.launch {
+        val clearNames = names.map {
+            it.replace("-", " ")
+        }
 
-        val list = names.map { name ->
-            repository.getByLocalName(name).map {
-                DrinkItem(it.toDrink())
-            }
-        }.flatten()
-
-        uiState.emit(
-            CategoryState(list)
-        )
+        repository.getCocktails().collect {
+            uiState.emit(
+                CategoryState(
+                    it.filter { raw -> clearNames.contains(raw.name) }.map(::DrinkItem)
+                )
+            )
+        }
     }
 
 }

@@ -7,24 +7,19 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import io.letDrink.localbar.db.pojo.FeaturedItem
 import io.letdrink.R
-import io.letdrink.common.DataFlowEvent
-import io.letdrink.common.DataFlowSource
-import io.letdrink.common.const.Constants
 import io.letdrink.common.recycler.ItemAdapter
 import io.letdrink.common.state.SectionState
-import io.letdrink.common.viewmodel.BaseViewModel
 import io.letdrink.section.search.featured.category.getCategoryActivityIntent
+import io.letdrink.section.search.featured.recycler.CategoriesItem
 import kotlinx.android.synthetic.main.fragment_featured_drink.*
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FeaturedFragment : Fragment(R.layout.fragment_featured_drink) {
@@ -54,20 +49,18 @@ class FeaturedFragment : Fragment(R.layout.fragment_featured_drink) {
         viewModel.create()
     }
 
-    fun setContent(sectionState: SectionState<List<CategoryModel>>) {
+    fun setContent(sectionState: SectionState<List<CategoriesItem>>) {
         if (sectionState.isLoading) {
             categoryContainer.displayedChild = 0
         } else {
             categoryContainer.displayedChild = 1
             sectionState.content?.let { list ->
-                list.map {
-                    categoriesAdapter.add(CategoriesItem(it))
-                }
+                categoriesAdapter.add(list)
             }
         }
     }
 
-    private fun startCategoryActivity(imageView: ImageView, categoryModel: CategoryModel) {
+    private fun startCategoryActivity(imageView: ImageView, featuredItem: FeaturedItem) {
         val transitionName = ViewCompat.getTransitionName(imageView)!!
         val options: ActivityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
             requireActivity(),
@@ -76,52 +69,10 @@ class FeaturedFragment : Fragment(R.layout.fragment_featured_drink) {
         )
 
         startActivity(
-            requireActivity().getCategoryActivityIntent(categoryModel, transitionName),
+            requireActivity().getCategoryActivityIntent(featuredItem, transitionName),
             options.toBundle()
         )
     }
 }
 
-class FeaturedViewModel @ViewModelInject constructor(private val featuredRepository: FeaturedRepository) :
-    BaseViewModel<FeaturedViewState>() {
-
-    override val uiState: MutableStateFlow<FeaturedViewState> = MutableStateFlow(
-        FeaturedViewState(
-            SectionState(isLoading = true)
-        )
-    )
-
-    fun create() {
-        backgroundScope.launch {
-            featuredRepository.get().collect {
-                when (it) {
-                    is DataFlowEvent.Loading -> {
-                        if (it.source == DataFlowSource.REMOTE) {
-                            uiState.emit(
-                                FeaturedViewState(
-                                    SectionState(isLoading = true)
-                                )
-                            )
-                        }
-                    }
-                    is DataFlowEvent.Content -> {
-                        uiState.emit(
-                            FeaturedViewState(
-                                SectionState(it.value.extractIconForCategory(), isLoading = false)
-                            )
-                        )
-                    }
-                    else -> Unit
-                }
-            }
-        }
-    }
-
-    private fun List<CategoryModel>.extractIconForCategory(): List<CategoryModel> {
-        return map {
-            it.copy(image = Constants.LOCAL_BAR.IMAGES + it.items.random() + ".jpg")
-        }
-    }
-}
-
-class FeaturedViewState(val categories: SectionState<List<CategoryModel>>)
+class FeaturedViewState(val categories: SectionState<List<CategoriesItem>>)

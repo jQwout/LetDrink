@@ -2,15 +2,9 @@ package io.letdrink.features.random
 
 import io.letDrink.localbar.db.CocktailConsumer
 import io.letDrink.localbar.db.CocktailRepository
-import com.example.thecocktaildb.network.models.Drink
-import io.letdrink.common.const.Constants
-import io.letdrink.features.mapper.toCocktail
-import io.letdrink.features.mapper.toDrink
-import io.letdrink.features.mapper.toIngredient
-import io.letdrink.features.sources.SourceWrapper
+
 
 class RandomCocktailService(
-    private val sourceWrapper: SourceWrapper,
     private val favoritesRepository: CocktailRepository,
     private val cocktailConsumer: CocktailConsumer
 ) {

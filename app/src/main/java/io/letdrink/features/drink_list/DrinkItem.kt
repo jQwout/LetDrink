@@ -2,16 +2,15 @@ package io.letdrink.features.drink_list
 
 import android.view.View
 import android.widget.ImageView
-import android.widget.RatingBar
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
+import io.letDrink.localbar.db.pojo.CocktailRaw
 import io.letdrink.R
 import io.letdrink.common.const.Constants
-import com.example.thecocktaildb.network.models.Drink
 
-open class DrinkItem(val drink: Drink) : AbstractItem<DrinkItem.ViewHolder>() {
+open class DrinkItem(val drink: CocktailRaw) : AbstractItem<DrinkItem.ViewHolder>() {
 
     override val type: Int
         get() = Constants.FastAdapter.DRINK_ITEM_ID
@@ -23,7 +22,7 @@ open class DrinkItem(val drink: Drink) : AbstractItem<DrinkItem.ViewHolder>() {
         return ViewHolder(v)
     }
 
-    override var identifier: Long = drink.id
+    override var identifier: Long = drink.name.hashCode().toLong()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -50,11 +49,11 @@ open class DrinkItem(val drink: Drink) : AbstractItem<DrinkItem.ViewHolder>() {
         val description: TextView = view.findViewById(R.id.description)
 
         override fun bindView(item: DrinkItem, payloads: List<Any>) {
-            name.text = item.drink.drinkName
-            description.text = item.drink.getDescriptionOnIngredientsStr()
+            name.text = item.drink.name
+            description.text = item.drink.description
 
             Glide.with(imagePreview.context)
-                .load(item.drink.getPreview())
+                .load(item.drink.getImg())
                 .into(imagePreview)
         }
 
@@ -64,8 +63,4 @@ open class DrinkItem(val drink: Drink) : AbstractItem<DrinkItem.ViewHolder>() {
             imagePreview.setImageDrawable(null)
         }
     }
-}
-
-fun Drink.toIngredientsString(): String {
-    return ingredients.get(0).name + "," + ingredients.get(1).name
 }

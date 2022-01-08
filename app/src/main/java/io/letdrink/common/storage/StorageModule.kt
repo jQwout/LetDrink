@@ -2,18 +2,16 @@ package io.letdrink.common.storage
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.core.content.edit
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Qualifier
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object SharedPreferenceModule {
 
     @Provides
@@ -23,7 +21,7 @@ object SharedPreferenceModule {
 }
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 interface KeyValueModule {
 
     @Binds

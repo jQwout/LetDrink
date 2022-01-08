@@ -100,18 +100,14 @@
                 android:layout_marginTop="12dp"
                 android:text="Instruction"
                 android:textColor="@color/black"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@+id/ratingTitle"
-                app:layout_constraintTop_toBottomOf="@+id/ratingTitle" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/instructionDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="4dp"
-                app:layout_constraintStart_toStartOf="@+id/instruction"
-                app:layout_constraintTop_toBottomOf="@+id/instruction" />
+                android:layout_marginTop="4dp" />
 
             <TextView
                 android:id="@+id/similiarTitle"
@@ -120,9 +116,7 @@
                 android:layout_marginTop="12dp"
                 android:text="Similiar"
                 android:textColor="@color/black"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@+id/instructionDescription"
-                app:layout_constraintTop_toBottomOf="@+id/instructionDescription" />
+                android:textSize="18sp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/similiar"
@@ -131,8 +125,10 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="4dp"
                 android:clipToPadding="false"
+                android:clipChildren="true"
+                android:paddingStart="0dp"
                 android:nestedScrollingEnabled="false"
-                android:paddingBottom="64dp"
+                android:paddingBottom="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/similiarTitle"
                 app:layout_constraintTop_toBottomOf="@+id/similiarTitle" />

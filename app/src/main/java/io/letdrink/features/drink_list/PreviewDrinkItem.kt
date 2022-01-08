@@ -4,13 +4,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.example.thecocktaildb.network.models.Drink
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
+import io.letDrink.localbar.db.pojo.CocktailRaw
 import io.letdrink.R
 import io.letdrink.common.const.Constants
 
-class PreviewDrinkItem(val drink: Drink) : AbstractItem<PreviewDrinkItem.ViewHolder>() {
+class PreviewDrinkItem(val drink: CocktailRaw) : AbstractItem<PreviewDrinkItem.ViewHolder>() {
 
     override val type: Int
         get() = Constants.FastAdapter.PREVIEW_DRINK_ITEM_ID
@@ -28,11 +28,11 @@ class PreviewDrinkItem(val drink: Drink) : AbstractItem<PreviewDrinkItem.ViewHol
         val ingredients: TextView = view.findViewById(R.id.ingredients)
 
         override fun bindView(item: PreviewDrinkItem, payloads: List<Any>) {
-            name.text = item.drink.drinkName
-            ingredients.text = item.drink.toIngredientsString()
+            name.text = item.drink.name
+            ingredients.text = item.drink.ingredients.joinToString()
 
             Glide.with(imagePreview.context)
-                .load(item.drink.getPreview())
+                .load(item.drink.getImg())
                 .into(imagePreview)
         }
 

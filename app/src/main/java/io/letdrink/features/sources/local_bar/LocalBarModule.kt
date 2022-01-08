@@ -1,44 +1,48 @@
 package io.letdrink.features.sources.local_bar
 
 import android.content.Context
+import android.content.SharedPreferences
+import com.google.gson.Gson
+
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.letDrink.localbar.db.CocktailConsumer
-import io.letDrink.localbar.db.CocktailRepository
-import io.letDrink.localbar.db.FavouritesRepository
+import dagger.hilt.components.SingletonComponent
 import io.letDrink.localbar.db.LocalBarServiceLocator
+import io.letDrink.localbar.db.repository.CocktailRepository
+import io.letDrink.localbar.db.repository.FavouritesRepository
+import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object LocalBarModule {
 
     @Provides
     @Singleton
-    fun provideLocalBar(@ApplicationContext context: Context): LocalBarServiceLocator {
-        return LocalBarServiceLocator(context)
+    fun provideLocalBar(
+        @ApplicationContext context: Context,
+        sharedPreferences: SharedPreferences,
+        okHttpClient: OkHttpClient
+    ): LocalBarServiceLocator {
+        return LocalBarServiceLocator(
+            context,
+            sharedPreferences,
+            okHttpClient,
+            Gson()
+        )
     }
 
     @Provides
     fun provideCocktailRepository(locator: LocalBarServiceLocator): CocktailRepository {
-        return locator.repository
+        return locator.cocktailRepository
     }
 
-    @Provides
-    fun provideCocktailConsumer(localBarServiceLocator: LocalBarServiceLocator): CocktailConsumer {
-        return localBarServiceLocator.cocktailConsumer
-    }
 
     @Provides
     fun provideFavouritesRepository(locator: LocalBarServiceLocator): FavouritesRepository {
         return locator.favouritesRepository
     }
 
-    @Provides
-    fun providerSourceContract(cocktailRepository: CocktailRepository): LocalSourceContract {
-        return LocalSourceContract(cocktailRepository)
-    }
 }
