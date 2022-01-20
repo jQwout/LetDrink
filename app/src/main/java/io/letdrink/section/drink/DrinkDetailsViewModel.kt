@@ -1,25 +1,23 @@
 package io.letdrink.section.drink
 
-import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.thecocktaildb.network.models.Drink
-import io.letdrink.common.state.ScreenState
-import io.letdrink.common.state.SectionState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.letDrink.localbar.db.pojo.CocktailDto
 import io.letdrink.common.viewmodel.BaseViewModel
-import io.letdrink.features.ingredient.FindByIngredientUseCase
 import io.letdrink.features.random.NavBarUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DrinkDetailsViewModel @ViewModelInject constructor(
+@HiltViewModel
+class DrinkDetailsViewModel @Inject constructor(
     private val drinkHistory: DrinkHistory
 ) : BaseViewModel<DrinkDetailsState>() {
 
     override val uiState: MutableStateFlow<DrinkDetailsState> =
         MutableStateFlow(DrinkDetailsState())
 
-    fun load(drink: Drink) {
+    fun load(drink: CocktailDto) {
         viewModelScope.launch {
             drinkHistory.save(drink)
             uiState.emit(
@@ -58,7 +56,7 @@ class DrinkDetailsViewModel @ViewModelInject constructor(
         }
     }
 
-    fun onSimiliarClick(drink: Drink) {
+    fun onSimiliarClick(drink: CocktailDto) {
         drinkHistory.save(drink)
         viewModelScope.launch {
             uiState.emit(
@@ -73,6 +71,6 @@ class DrinkDetailsViewModel @ViewModelInject constructor(
 }
 
 data class DrinkDetailsState(
-    val drink: Drink? = null,
+    val drink: CocktailDto? = null,
     val navBarUi: NavBarUi = NavBarUi()
 )

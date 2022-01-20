@@ -10,8 +10,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.letDrink.localbar.db.LocalBarServiceLocator
-import io.letDrink.localbar.db.repository.CocktailRepository
-import io.letDrink.localbar.db.repository.FavouritesRepository
+import io.letDrink.localbar.db.repository.*
+import io.letDrink.localbar.db.usecase.CheckUpdateUseCase
 import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
@@ -45,4 +45,23 @@ object LocalBarModule {
         return locator.favouritesRepository
     }
 
+    @Provides
+    fun provideCocktailFacade(locator: LocalBarServiceLocator): CocktailFacade {
+        return locator.cocktailFacade
+    }
+
+    @Provides
+    fun provideCheckUpdateUseCase(locator: LocalBarServiceLocator): CheckUpdateUseCase {
+        return locator.updateUseCase
+    }
+
+    @Provides
+    fun provideFeaturedFacade(locator: LocalBarServiceLocator): FeaturedFacade {
+        return locator.featuredFacade
+    }
+
+    @Provides
+    fun provideCategoryRepository(locator: LocalBarServiceLocator): CategoryRepository {
+        return locator.categoryRepository
+    }
 }

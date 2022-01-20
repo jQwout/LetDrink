@@ -5,24 +5,25 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import io.letdrink.R
 import io.letdrink.common.const.Constants
-import io.letdrink.common.long.collectOnly
-import com.example.thecocktaildb.network.models.Drink
+import io.letDrink.localbar.db.pojo.CocktailDto
 import io.letdrink.common.state.SectionState
 import io.letdrink.common.utils.intent
+import io.letdrink.features.glide.RequestListenerBase
 import io.letdrink.features.random.NavBarUi
-import io.letdrink.features.random.RandomDrinkState
 import kotlinx.android.synthetic.main.activity_drink_details.*
 import kotlinx.android.synthetic.main.activity_drink_details.backFab
 import kotlinx.android.synthetic.main.activity_drink_details.forwardFab
-import kotlinx.android.synthetic.main.fragment_random.*
+import kotlinx.android.synthetic.main.fragment_category_drinks.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-fun Activity.getDrinkDetailsActivityIntent(drink: Drink): Intent {
+fun Activity.getDrinkDetailsActivityIntent(drink: CocktailDto): Intent {
     return intent(DrinkDetailsActivity::class.java) {
         putExtra(Constants.EXTRA.DRINK, drink)
     }
@@ -37,8 +38,8 @@ class DrinkDetailsActivity : AppCompatActivity(R.layout.activity_drink_details) 
     private val fragment: DrinkCardFragment by lazy {
         supportFragmentManager.findFragmentByTag("card") as DrinkCardFragment
     }
-    private val drink: Drink by lazy {
-        intent.getSerializableExtra(Constants.EXTRA.DRINK) as Drink
+    private val drink: CocktailDto by lazy {
+        intent.getSerializableExtra(Constants.EXTRA.DRINK) as CocktailDto
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +61,7 @@ class DrinkDetailsActivity : AppCompatActivity(R.layout.activity_drink_details) 
         viewModel.load(drink)
     }
 
-    private fun setNew(drink: Drink) {
+    private fun setNew(drink: CocktailDto) {
         fragment.setContent(SectionState(content = drink)) {
             viewModel.onSimiliarClick(it)
         }
@@ -90,5 +91,5 @@ class DrinkDetailsActivity : AppCompatActivity(R.layout.activity_drink_details) 
 }
 
 fun interface SelectSimiliarDrinkListener {
-    fun select(drink: Drink)
+    fun select(drink: CocktailDto)
 }

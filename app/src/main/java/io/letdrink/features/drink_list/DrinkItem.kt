@@ -3,14 +3,19 @@ package io.letdrink.features.drink_list
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
+import io.letDrink.localbar.db.pojo.CocktailDto
 import io.letDrink.localbar.db.pojo.CocktailRaw
 import io.letdrink.R
 import io.letdrink.common.const.Constants
 
-open class DrinkItem(val drink: CocktailRaw) : AbstractItem<DrinkItem.ViewHolder>() {
+open class DrinkItem(val drink: CocktailDto) : AbstractItem<DrinkItem.ViewHolder>() {
 
     override val type: Int
         get() = Constants.FastAdapter.DRINK_ITEM_ID
@@ -22,7 +27,7 @@ open class DrinkItem(val drink: CocktailRaw) : AbstractItem<DrinkItem.ViewHolder
         return ViewHolder(v)
     }
 
-    override var identifier: Long = drink.name.hashCode().toLong()
+    override var identifier: Long = drink.data.name.hashCode().toLong()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -49,11 +54,14 @@ open class DrinkItem(val drink: CocktailRaw) : AbstractItem<DrinkItem.ViewHolder
         val description: TextView = view.findViewById(R.id.description)
 
         override fun bindView(item: DrinkItem, payloads: List<Any>) {
-            name.text = item.drink.name
-            description.text = item.drink.description
+            name.text = item.drink.data.name
+            description.text = item.drink.data.description
 
+            val t = MultiTransformation(CenterCrop(), RoundedCorners(8))
+            ViewCompat.setTransitionName(imagePreview, item.drink.data.name)
             Glide.with(imagePreview.context)
-                .load(item.drink.getImg())
+                .load(item.drink.data.getImg())
+                .transform(t)
                 .into(imagePreview)
         }
 

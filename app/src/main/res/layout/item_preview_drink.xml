@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="160dp"
     app:cardUseCompatPadding="true"
-    app:cardCornerRadius="16dp"
+    app:cardCornerRadius="4dp"
     android:elevation="4dp"
     android:layout_height="230dp">
 
@@ -16,6 +16,7 @@
             android:id="@+id/imagePreview"
             android:layout_width="150dp"
             android:layout_height="150dp"
+            android:transitionName=""
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars" />

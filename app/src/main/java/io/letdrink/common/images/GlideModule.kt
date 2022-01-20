@@ -9,7 +9,7 @@ import com.bumptech.glide.module.AppGlideModule
 @GlideModule
 class LetDrinkGlideModule : AppGlideModule() {
     override fun applyOptions(context: Context, builder: GlideBuilder) {
-        val memoryCacheSizeBytes = 1024 * 1024 * 20 // 20mb
+        val memoryCacheSizeBytes = 0// 20mb
         builder.setMemoryCache(LruResourceCache(memoryCacheSizeBytes.toLong()))
     }
 }

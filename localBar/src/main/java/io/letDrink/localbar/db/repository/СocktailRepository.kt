@@ -1,13 +1,12 @@
 package io.letDrink.localbar.db.repository
 
-import android.content.SharedPreferences
+import io.letDrink.localbar.db.pojo.CocktailDto
 import io.letDrink.localbar.db.pojo.CocktailRaw
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import io.letDrink.localbar.db.utils.filterByKeywords
+import kotlinx.coroutines.flow.*
 
 
-class CocktailRepository {
+open class CocktailRepository {
 
     private val _cocktails: MutableList<CocktailRaw> = mutableListOf()
 
@@ -20,28 +19,39 @@ class CocktailRepository {
 }
 
 
-class FavouritesRepository(
-    private val cocktailRepository: CocktailRepository,
-    private val sharedPreferences: SharedPreferences
+class CocktailFacade(
+    val cocktailRepository: CocktailRepository,
+    val favouritesRepository: FavouritesRepository,
 ) {
 
-    fun get() = cocktailRepository.getCocktails().map { list ->
-        list.filter { raw ->
-            getSet()?.contains(raw.name) ?: false
+    fun get(): Flow<List<CocktailDto>> {
+        return cocktailRepository.getCocktails()
+            .combineToCocktailDto()
+    }
+
+    fun getFavourites(): Flow<List<CocktailDto>> {
+        return cocktailRepository.getCocktails()
+            .combineToCocktailDto()
+            .map {
+                it.filter { it.isFavourite }
+            }
+    }
+
+    fun getLikeA(cocktailDto: CocktailDto): Flow<List<CocktailDto>> {
+        return cocktailRepository.getCocktails()
+            .map { it.filterByKeywords(cocktailDto.data) }
+            .combineToCocktailDto()
+    }
+
+    suspend fun changeFavourite(cocktailDto: CocktailDto) {
+        favouritesRepository.change(cocktailDto.data)
+    }
+
+    private fun Flow<List<CocktailRaw>>.combineToCocktailDto(): Flow<List<CocktailDto>> {
+        return combine(favouritesRepository.get()) { c, f ->
+            c.map {
+                CocktailDto(it, f.contains(it.name))
+            }
         }
     }
-
-    fun add(cocktailRaw: CocktailRaw) {
-        val set = getSet()?.toMutableSet() ?: mutableSetOf()
-        set.add(cocktailRaw.name)
-        sharedPreferences.edit().putStringSet(this::cocktailRepository.name, set).commit()
-    }
-
-    fun remove(cocktailRaw: CocktailRaw) {
-        val set = getSet()?.toMutableSet() ?: return
-        set.remove(cocktailRaw.name)
-        sharedPreferences.edit().putStringSet(this::cocktailRepository.name, set).commit()
-    }
-
-    private fun getSet() = sharedPreferences.getStringSet(this::cocktailRepository.name, null)
 }

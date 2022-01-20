@@ -9,6 +9,8 @@ object Constants {
         const val PREVIEW_DRINK_ITEM_PH_ID = 4
         const val DRINK_ITEM_RECYCLER_ID = 5
         const val CATEGORIES_RECYCLER_ID = 6
+        const val TEXT_ITEM_ID = 7
+        const val EMPTY_ITEM_ID = 0
     }
 
     object UI {
@@ -17,6 +19,7 @@ object Constants {
 
     object EXTRA {
         const val DRINK = "extra.drink"
+        const val TRANSACTION = "extra.transaction"
     }
 
     object DB {

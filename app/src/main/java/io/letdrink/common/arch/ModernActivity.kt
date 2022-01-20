@@ -3,6 +3,7 @@ package io.letdrink.common.arch
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import io.letdrink.common.viewmodel.ModernViewModel
 
@@ -31,4 +32,10 @@ abstract class ModernFragment : Fragment() {
 
         consumer.subscribe(viewModel)
     }
+}
+
+fun AppCompatActivity.setToolbar(toolbar: Toolbar) {
+    setSupportActionBar(toolbar)
+    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    supportActionBar?.setHomeButtonEnabled(true)
 }

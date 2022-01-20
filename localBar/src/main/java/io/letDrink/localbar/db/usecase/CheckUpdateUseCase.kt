@@ -7,21 +7,29 @@ import io.letDrink.localbar.db.storage.CocktailsRemoteStorage
 class CheckUpdateUseCase(
     val localStorage: CocktailsLocalStorage,
     val remoteStorage: CocktailsRemoteStorage,
-    val sharedPreferences: SharedPreferences
+    val sharedPreferences: SharedPreferences,
+    val populateRepositoryUseCase: PopulateRepositoryUseCase
 ) {
 
     suspend fun update() {
-        if (checkNeedUpdate().not()) return
+        localStorage.prepareFiles()
 
-        val remoteList = remoteStorage.getCocktailsPreview().toMutableList()
-        val localList = localStorage.getFileNames()
+        if (checkNeedUpdate()) {
 
-        remoteList.removeAll {
-            localList.contains(it.name)
+            val remoteList = remoteStorage.getCocktailsPreview().toMutableList()
+            val localList = localStorage.getFileNames()
+
+            remoteList.removeAll {
+                localList.contains(it.name)
+            }
+
+            remoteList.forEach {
+                val raw = remoteStorage.getCocktailRaw(it)
+                localStorage.add(raw, it.name)
+            }
         }
 
-        remoteList.map { remoteStorage.getCocktailRaw(it) }.forEach(localStorage::add)
-
+        populateRepositoryUseCase.populate()
     }
 
     private fun checkNeedUpdate(): Boolean {

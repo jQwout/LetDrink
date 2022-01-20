@@ -6,9 +6,21 @@
 
     <include layout="@layout/fragment_featured_drink_shimmer" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/categoryRecyclerView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/search_category_block" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:paddingTop="84dp"
+            android:clipToPadding="false"
+            android:paddingBottom="72dp"
+            android:id="@+id/categoryRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
 </ViewSwitcher>

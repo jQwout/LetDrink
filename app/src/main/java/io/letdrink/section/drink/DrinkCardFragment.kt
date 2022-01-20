@@ -2,7 +2,11 @@ package io.letdrink.section.drink
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -10,16 +14,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.example.thecocktaildb.network.models.Drink
 import com.github.florent37.fiftyshadesof.FiftyShadesOf
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.chip.Chip
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import io.letDrink.localbar.db.pojo.CocktailDto
 import io.letdrink.R
+import io.letdrink.common.const.Constants
 import io.letdrink.common.recycler.ItemAdapter
 import io.letdrink.common.state.SectionState
 import io.letdrink.common.utils.BottomSheetBehaviorCallback
@@ -32,12 +40,8 @@ import kotlinx.android.synthetic.main.fragment_drink_card_bottom_sheet_redesing.
 import kotlinx.android.synthetic.main.fragment_drink_card_bottom_sheet_redesing_shimmer.*
 import kotlinx.android.synthetic.main.fragment_drink_card_redesing.*
 import kotlinx.android.synthetic.main.fragment_random.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class DrinkCardFragment : Fragment(R.layout.fragment_drink_card_redesing) {
@@ -89,7 +93,7 @@ class DrinkCardFragment : Fragment(R.layout.fragment_drink_card_redesing) {
         lifecycleScope.launchWhenResumed {
             viewModel.uiState.collect { state ->
                 state.favourite.content?.let { setFavorite(it) }
-                setSimiliar(state.similiar)
+             //   setSimiliar(state.similiar)
             }
         }
     }
@@ -111,22 +115,38 @@ class DrinkCardFragment : Fragment(R.layout.fragment_drink_card_redesing) {
             .stop()
     }
 
-    fun setContent(state: SectionState<Drink>, listener: SelectSimiliarDrinkListener) {
+    private fun View.setHeight(height: Int) {
+        val params = layoutParams
+        params.height = height
+        layoutParams = params
+    }
 
-        state.content?.let { drink ->
+    fun setContent(
+        state: SectionState<CocktailDto>,
+        listener: SelectSimiliarDrinkListener
+    ) {
 
-            drinkLoadingDelegate?.showContentIfNeed()
+        state.content?.let { d ->
+            val drink = d.data
 
-            if (drink.drinkName != name.text) {
+            // drinkLoadingDelegate?.showContentIfNeed()
 
-                name.text = drink.drinkName
-                instructionDescription.text = drink.instructions
+            if (drink.name != name.text) {
+
+                name.text = drink.name
+                instructionDescription.text = drink.directions.joinToString("\n")
                 itemAdapter.clear()
-                itemAdapter.add(drink.ingredients.map { i -> IngradientsItem(i.name, i.count) })
+                itemAdapter.add(drink.ingredients.map { i ->
+                    IngradientsItem(
+                        i.ingredient,
+                        i.quantity
+                    )
+                })
 
-                Glide.with(this@DrinkCardFragment)
-                    .load(drink.drinkThumb)
+                Glide.with(image.context)
+                    .load(drink.getImg())
                     .addListener(object : RequestListener<Drawable> {
+
                         override fun onLoadFailed(
                             e: GlideException?,
                             model: Any?,
@@ -143,33 +163,35 @@ class DrinkCardFragment : Fragment(R.layout.fragment_drink_card_redesing) {
                             dataSource: DataSource?,
                             isFirstResource: Boolean
                         ): Boolean {
+                            val margin =
+                                MetricsUtil.convertDpToPixel(requireContext(), 16f).toInt()
+                            image.setHeight(drinkCardRedesingFragment.width)
+                            bottomSheetBehavior?.setPeekHeight(
+                                drinkCardRedesingFragment.height - drinkCardRedesingFragment.width + margin,
+                                true
+                            )
                             image.setImageDrawable(resource)
-                            val displayH = MetricsUtil.getDisplayH(requireActivity())
-                            val margin = MetricsUtil.convertDpToPixel(requireContext(), 8F)
-                            val h = displayH - resource.minimumHeight + margin
-                            drinkCardBottomSheet.minimumHeight = h.toInt()
-                            bottomSheetBehavior?.setPeekHeight(h.toInt(), true)
                             return true
                         }
                     })
                     .into(image)
 
-                categorySection.visibleOrGone(drink.categories != null)
-                category.text = drink.categories
-
                 similiarAdapter.clear()
-                viewModel.loadSimiliar(drink)
+                viewModel.loadSimiliar(d)
             }
 
-            setFavorite(drink)
+            setCategories(drink.keywords)
+
+            setFavorite(d)
 
             this.listener = listener
         }
 
-        if (state.isLoading) setLoading() else stopLoading()
+        //    if (state.isLoading) setLoading() else stopLoading()
+        // todo
     }
 
-    fun setSimiliar(state: SectionState<List<Drink>>) {
+    fun setSimiliar(state: SectionState<List<CocktailDto>>) {
 
         if (state.isLoading) {
             similiarTitle.visibility = View.GONE
@@ -196,7 +218,7 @@ class DrinkCardFragment : Fragment(R.layout.fragment_drink_card_redesing) {
 
     }
 
-    fun setFavorite(drink: Drink) {
+    fun setFavorite(drink: CocktailDto) {
 
         favoriteFab.setImageResource(
             if (drink.isFavourite) R.drawable.ic_baseline_favorite_24 else R.drawable.ic_baseline_favorite_border_24
@@ -215,8 +237,25 @@ class DrinkCardFragment : Fragment(R.layout.fragment_drink_card_redesing) {
         }
     }
 
+    private fun setCategories(list: List<String>) {
+        categoryChips.removeAllViews()
+        list.forEach {
+            val c = Chip(requireContext())
+            c.text = it
+            categoryChips.addView(c)
+        }
+    }
+
     private fun getMinHeightBottomSheetForLoading(): Int {
         return (MetricsUtil.getDisplayH(requireActivity()) * 0.5).toInt()
+    }
+
+    companion object {
+        fun create(transition: String): DrinkCardFragment {
+            val d = DrinkCardFragment()
+            d.arguments = bundleOf(Constants.EXTRA.TRANSACTION to transition)
+            return d
+        }
     }
 }
 

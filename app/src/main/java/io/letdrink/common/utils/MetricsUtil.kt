@@ -47,4 +47,8 @@ object MetricsUtil {
     fun getDisplayH(activity: Activity): Int {
         return getDisplayWH(activity).second
     }
+
+    fun getDisplayW(activity: Activity): Int {
+        return getDisplayWH(activity).first
+    }
 }

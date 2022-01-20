@@ -1,7 +1,7 @@
 package io.letdrink.section.search.featured
 
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.letDrink.localbar.db.repository.FeaturedRepository
+import io.letDrink.localbar.db.repository.FeaturedFacade
 import io.letdrink.common.state.SectionState
 import io.letdrink.common.viewmodel.BaseViewModel
 import io.letdrink.section.search.featured.mapper.CategoryItemMapper
@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FeaturedViewModel @Inject constructor(
-    private val featuredRepository: FeaturedRepository,
+    private val facade: FeaturedFacade,
     private val mapper: CategoryItemMapper
 ) : BaseViewModel<FeaturedViewState>() {
 
@@ -27,9 +27,7 @@ class FeaturedViewModel @Inject constructor(
             uiState.emit(
                 FeaturedViewState(
                     SectionState(
-                        mapper.map(
-                            featuredRepository.getFeatured()
-                        ),
+                        mapper.map(facade.getFeatured()),
                         isLoading = false
                     )
                 )

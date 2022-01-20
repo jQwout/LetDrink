@@ -6,6 +6,8 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/drinkCardFragment"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:name="io.letdrink.section.drink.DrinkCardFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,6 +19,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_baseline_arrow_back_24"
         app:backgroundTint="@color/purple_500"
+        android:layout_marginBottom="56dp"
         app:layout_anchor="@+id/drinkCardFragment"
         app:tint="@color/white"
         app:useCompatPadding="true"
@@ -30,6 +33,7 @@
         android:src="@drawable/ic_baseline_arrow_forward_24"
         app:backgroundTint="@color/purple_500"
         app:layout_anchorGravity="bottom|end"
+        android:layout_marginBottom="56dp"
         app:layout_anchor="@+id/drinkCardFragment"
         app:tint="@color/white"
         app:useCompatPadding="true"

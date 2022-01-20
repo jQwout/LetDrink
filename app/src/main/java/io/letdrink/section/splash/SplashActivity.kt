@@ -1,6 +1,5 @@
 package io.letdrink.section.splash
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -9,12 +8,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
-import io.letDrink.localbar.db.LocalBarServiceLocator
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.letDrink.localbar.db.usecase.CheckUpdateUseCase
 import io.letdrink.features.main.MainActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
@@ -37,12 +37,17 @@ class SplashActivity : AppCompatActivity() {
 }
 
 
-class SplashViewModel @ViewModelInject constructor() : ViewModel() {
+@HiltViewModel
+class SplashViewModel @Inject constructor(
+    private val updateUseCase: CheckUpdateUseCase
+) : ViewModel() {
 
     val uiState: MutableStateFlow<SplashState> = MutableStateFlow(SplashState())
 
     fun start() {
         viewModelScope.launch {
+            uiState.emit(SplashState(true))
+            updateUseCase.update()
             uiState.emit(SplashState(false))
         }
     }

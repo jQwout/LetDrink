@@ -5,7 +5,7 @@
     android:layout_width="160dp"
     app:cardUseCompatPadding="true"
     android:background="@drawable/bg_drink_card_shimmer_rounded"
-    app:cardCornerRadius="16dp"
+    app:cardCornerRadius="4dp"
     android:elevation="4dp"
     android:layout_height="230dp">
 </FrameLayout>

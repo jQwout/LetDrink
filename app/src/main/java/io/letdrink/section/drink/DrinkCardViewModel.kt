@@ -1,57 +1,58 @@
 package io.letdrink.section.drink
 
-import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import io.letDrink.localbar.db.CocktailRepository
-import com.example.thecocktaildb.network.models.Drink
-import io.letDrink.localbar.db.FavouritesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.letDrink.localbar.db.pojo.CocktailDto
+import io.letDrink.localbar.db.pojo.CocktailRaw
+import io.letDrink.localbar.db.repository.CocktailFacade
+import io.letDrink.localbar.db.repository.CocktailRepository
+import io.letDrink.localbar.db.repository.FavouritesRepository
 import io.letdrink.common.state.SectionState
-import io.letdrink.common.utils.cancelChildrenAndCreateNew
 import io.letdrink.common.viewmodel.BaseViewModel
-import io.letdrink.features.ingredient.FindByIngredientUseCase
-import io.letdrink.features.mapper.toCocktail
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import javax.inject.Inject
 
-class DrinkCardViewModel @ViewModelInject constructor(
-    private val favoritesRepository: FavouritesRepository,
-    private val findByIngredientUseCase: FindByIngredientUseCase
+@HiltViewModel
+class DrinkCardViewModel @Inject constructor(
+    private val cocktailFacade: CocktailFacade
 ) : BaseViewModel<DrinkCardState>() {
 
     override val uiState: MutableStateFlow<DrinkCardState> = MutableStateFlow(
         DrinkCardState()
     )
 
-    fun changeFavorite(drink: Drink) = backgroundScope.launch {
-        val newDrink = drink.copy(isFavourite = !drink.isFavourite)
-        if (newDrink.isFavourite) {
-            favoritesRepository.add(newDrink.toCocktail())
-        } else {
-            favoritesRepository.remove(newDrink.toCocktail())
-        }
-        delay(50)
-        uiState.emit(lastState.copy(favourite = SectionState(newDrink)))
-    }
-
-    fun loadSimiliar(drink: Drink) = backgroundScope.launch {
-        val similiar = findByIngredientUseCase.find(drink)
+    fun changeFavorite(dto: CocktailDto) = backgroundScope.launch {
+        cocktailFacade.changeFavourite(dto)
         uiState.emit(
             lastState.copy(
-                similiar = SectionState(similiar),
-                favourite = SectionState(drink)
+                favourite = SectionState(
+                    CocktailDto(
+                        dto.data,
+                        dto.isFavourite.not()
+                    )
+                )
             )
         )
+    }
+
+    fun loadSimiliar(cocktailRaw: CocktailDto) = backgroundScope.launch {
+        cocktailFacade.getLikeA(cocktailRaw).collect {
+            uiState.emit(
+                lastState.copy(
+                    similiar = SectionState(it)
+                )
+            )
+        }
     }
 }
 
 class DrinkCardState(
-    val similiar: SectionState<List<Drink>> = SectionState(),
-    val favourite: SectionState<Drink> = SectionState()
+    val similiar: SectionState<List<CocktailDto>> = SectionState(),
+    val favourite: SectionState<CocktailDto> = SectionState()
 ) {
     fun copy(
-        similiar: SectionState<List<Drink>> = SectionState(),
-        favourite: SectionState<Drink> = SectionState()
+        similiar: SectionState<List<CocktailDto>> = SectionState(),
+        favourite: SectionState<CocktailDto> = SectionState()
     ): DrinkCardState {
         return DrinkCardState(similiar, favourite)
     }

@@ -2,7 +2,7 @@ package io.letDrink.localbar.db.pojo
 
 import java.io.Serializable
 
-class CocktailRaw(
+data class CocktailRaw(
     val description: String,
     val directions: List<String>,
     val github: String,
@@ -11,18 +11,16 @@ class CocktailRaw(
     val name: String,
     val source: String?,
     val ingredients: List<IngredientRaw>
-) {
+) : Serializable {
 
     fun getImg() = "${PATH_TO_IMAGE}${image}"
 
 }
 
-data class IngredientRaw(
-    val ingredient: String,
-    val measure: String,
-    val quantity: String
-)
-
+data class CocktailDto(
+    val data: CocktailRaw,
+    val isFavourite: Boolean
+) : Serializable
 
 data class FeaturedItem(
     val description: String,
@@ -32,7 +30,7 @@ data class FeaturedItem(
     val title: String,
 ) : Serializable {
 
-    fun getImg() = "${PATH_TO_IMAGE}${items.first()}"
+    fun getImg() = "${PATH_TO_IMAGE}${items.first()}.jpg"
 
 }
 

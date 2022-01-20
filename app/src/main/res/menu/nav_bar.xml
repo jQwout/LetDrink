@@ -16,6 +16,6 @@
         android:id="@+id/action_search"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_search_24"
-        android:title="Favorites"
+        android:title="Search"
         app:showAsAction="ifRoom" />
 </menu>

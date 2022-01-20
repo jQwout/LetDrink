@@ -16,9 +16,11 @@ import io.letDrink.localbar.db.pojo.FeaturedItem
 import io.letdrink.R
 import io.letdrink.common.recycler.ItemAdapter
 import io.letdrink.common.state.SectionState
+import io.letdrink.features.search.by_name.startSearchByNameActivity
 import io.letdrink.section.search.featured.category.getCategoryActivityIntent
 import io.letdrink.section.search.featured.recycler.CategoriesItem
 import kotlinx.android.synthetic.main.fragment_featured_drink.*
+import kotlinx.android.synthetic.main.search_category_block.*
 import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
@@ -44,6 +46,10 @@ class FeaturedFragment : Fragment(R.layout.fragment_featured_drink) {
             viewModel.uiState.collect {
                 setContent(it.categories)
             }
+        }
+
+        byName.setOnClickListener {
+            requireActivity().startSearchByNameActivity()
         }
 
         viewModel.create()

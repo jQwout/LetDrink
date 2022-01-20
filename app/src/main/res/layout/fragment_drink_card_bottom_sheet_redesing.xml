@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_drink_card_rounded"
@@ -14,20 +15,22 @@
         <TextView
             android:id="@+id/name"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:paddingTop="8dp"
             android:textColor="@color/black"
             android:textSize="24sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="MARGARITA" />
 
         <ImageView
             android:id="@+id/favouriteIcon"
             android:layout_width="24dp"
-            android:visibility="gone"
-            android:src="@drawable/ic_baseline_favorite_24_black"
             android:layout_height="24dp"
             android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="24dp"/>
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/ic_baseline_favorite_24_black"
+            android:visibility="gone" />
 
     </FrameLayout>
 
@@ -40,7 +43,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:scrollbars="none"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/categoryChips"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:chipSpacing="4dp"
+                    app:lineSpacing="4dp"
+                    app:singleLine="true">
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </HorizontalScrollView>
 
             <TextView
                 android:id="@+id/ingredientsTitle"
@@ -49,10 +70,7 @@
                 android:layout_gravity="center"
                 android:text="Ingredients"
                 android:textColor="@color/black"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/name2"
-                app:layout_constraintTop_toBottomOf="@+id/name2" />
+                android:textSize="18sp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/ingredients"
@@ -64,34 +82,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ingredientsTitle" />
-
-            <FrameLayout
-                android:id="@+id/categorySection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="Category"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ingredients" />
-
-                <TextView
-                    android:id="@+id/category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="12dp"
-                    android:textSize="14sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ingredients" />
-
-            </FrameLayout>
 
             <TextView
                 android:id="@+id/instruction"
@@ -124,16 +114,17 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="4dp"
-                android:clipToPadding="false"
                 android:clipChildren="true"
-                android:paddingStart="0dp"
+                android:clipToPadding="false"
                 android:nestedScrollingEnabled="false"
-                android:paddingBottom="32dp"
+                android:paddingStart="0dp"
+                android:paddingBottom="140dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/similiarTitle"
                 app:layout_constraintTop_toBottomOf="@+id/similiarTitle" />
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/similiarShimmer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

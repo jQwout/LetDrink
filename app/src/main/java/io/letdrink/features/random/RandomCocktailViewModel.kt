@@ -1,45 +1,50 @@
 package io.letdrink.features.random
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.thecocktaildb.network.models.Drink
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.letDrink.localbar.db.pojo.CocktailDto
 import io.letdrink.common.state.SectionState
+import io.letdrink.common.viewmodel.BaseViewModel2
 import io.letdrink.section.drink.DrinkHistory
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import javax.inject.Inject
 
-class RandomCocktailViewModel @ViewModelInject constructor(
+@HiltViewModel
+class RandomCocktailViewModel @Inject constructor(
     private val randomCocktailService: RandomCocktailService,
     private val drinkHistory: DrinkHistory
-) : ViewModel() {
+) : BaseViewModel2() {
 
     val uiState: MutableStateFlow<RandomDrinkState> = MutableStateFlow(RandomDrinkState())
 
     private val lastState get() = uiState.value
 
     fun onStart() {
-        viewModelScope.launch {
-            drinkHistory.save(randomCocktailService.get())
-            uiState.emit(
-                RandomDrinkState(
-                    drinkCardState = SectionState(
-                        content = drinkHistory.list.first,
-                        isLoading = false
-                    ),
-                    navBarSection = SectionState(
-                        content = NavBarUi(
-                            hasPrev = false,
-                            hasNext = true
+        backgroundScope.launch {
+            randomCocktailService.get().collect {
+                drinkHistory.save(it)
+                uiState.emit(
+                    RandomDrinkState(
+                        drinkCardState = SectionState(
+                            content = drinkHistory.list.first,
+                            isLoading = false
                         ),
-                        isLoading = false
+                        navBarSection = SectionState(
+                            content = NavBarUi(
+                                hasPrev = false,
+                                hasNext = true
+                            ),
+                            isLoading = false
+                        )
                     )
                 )
-            )
+            }
         }
     }
 
-    fun onClickSimiliar(drink: Drink) {
+    fun onClickSimiliar(drink: CocktailDto) {
         viewModelScope.launch {
             uiState.emit(
                 RandomDrinkState(
@@ -75,7 +80,7 @@ class RandomCocktailViewModel @ViewModelInject constructor(
     }
 
     fun onClickNextDrink() {
-        viewModelScope.launch {
+        backgroundScope.launch {
             val currentContent = lastState.drinkCardState.content
             val nextDrink = drinkHistory.getNext(currentContent)
             if (nextDrink == null) {
@@ -90,19 +95,21 @@ class RandomCocktailViewModel @ViewModelInject constructor(
                         )
                     )
                 )
-                drinkHistory.save(randomCocktailService.get())
-                uiState.emit(
-                    RandomDrinkState(
-                        SectionState(drinkHistory.getLast(), false),
-                        SectionState(
-                            NavBarUi(
-                                hasPrev = true,
-                                hasNext = true
+                randomCocktailService.get().collect {
+                    drinkHistory.save(it)
+                    uiState.emit(
+                        RandomDrinkState(
+                            SectionState(drinkHistory.getLast(), false),
+                            SectionState(
+                                NavBarUi(
+                                    hasPrev = true,
+                                    hasNext = true
+                                )
                             )
                         )
                     )
-                )
 
+                }
             } else {
                 uiState.emit(
                     RandomDrinkState(
@@ -121,7 +128,7 @@ class RandomCocktailViewModel @ViewModelInject constructor(
 }
 
 data class RandomDrinkState(
-    val drinkCardState: SectionState<Drink> = SectionState(null, true),
+    val drinkCardState: SectionState<CocktailDto> = SectionState(null, true),
     val navBarSection: SectionState<NavBarUi> = SectionState()
 )
 
